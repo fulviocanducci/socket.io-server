@@ -3,22 +3,17 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var port = process.env.PORT || 3001;
 
-/*
-app.get('/', function(req, res){
-  res.sendFile(__dirname + '/index.html');
-});
-*/
+var data = [];
 
-io.on('connection', function(socket){
-  console.log('[ Connect ] => Socket.io');
-  console.log('-------------------------------------------------');
+io.on('connection', (socket) => {  
   socket.on('chat message', (message) => {
-    console.log('[ On   ][chat message] => ' + message);
-    io.emit('chat message', message);    
-    console.log('[ Emit ][chat message] => ' + message);
+    if (message !== '') {
+      data = [...data, message];    
+    }    
+    io.emit('chat message', JSON.stringify(data));        
   });
 });
 
-http.listen(port, function(){
+http.listen(port, () => {
   console.log('listening on *:' + port);
 });
